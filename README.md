@@ -57,47 +57,89 @@ Giải mã file bằng khóa phiên AES-GCM.
 Gửi ACK (xác nhận thành công) hoặc NACK (thất bại) tới người gửi.
 
 Hướng dẫn sử dụng
+
 Bước 1: Kết nối
+
 Mở giao diện trong trình duyệt.
+
 Hệ thống tự động kết nối tới server qua Socket.IO.
+
 Kiểm tra trạng thái kết nối trên giao diện.
+
 Bước 2: Tạo khóa RSA
+
 Tại giao diện người gửi hoặc người nhận:
+
 Nhấn nút Tạo khóa RSA để sinh cặp khóa RSA-2048.
+
 Khóa công khai được hiển thị và lưu trữ trên server.
+
 Bước 3: Thực hiện handshake
+
 Người gửi: Nhấn Gửi "Hello!" để bắt đầu.
+
 Người nhận: Nhận tín hiệu và nhấn Gửi "Ready!" để xác nhận.
+
 Bước 4: Gửi khóa xác thực
+
 Người gửi:
+
 Chọn file hoặc nhập nội dung trực tiếp.
+
 Nhấn Gửi khóa xác thực để gửi khóa phiên AES-GCM và metadata đã ký.
+
 Bước 5: Gửi file
+
 Người gửi:
+
 Kéo thả file hoặc nhập nội dung.
+
 Nhấn Gửi file mã hóa để mã hóa và gửi file.
+
 File được mã hóa bằng AES-GCM, kèm hash SHA-512 và chữ ký RSA.
+
 Bước 6: Nhận và xác thực
+
 Người nhận:
+
 Nhận file và xác thực chữ ký metadata, hash, và chữ ký file.
+
 Nhấn Xác thực & Giải mã để giải mã file.
+
 Xem nội dung file đã giải mã hoặc tải về.
+
 Bước 7: Theo dõi giao dịch
+
 Server trung gian hiển thị:
+
 Nhật ký giao dịch và tin nhắn real-time.
+
 Thống kê kết nối, giao dịch, và tỷ lệ thành công.
+
 📊 Hiệu suất
+
 Thông số đo được:
+
 Độ trễ mã hóa: ~20-50ms (tùy kích thước file).
+
 Độ trễ giải mã: ~10-30ms.
+
 Băng thông: Tùy thuộc kích thước file, overhead mã hóa ~5-10%.
+
 Đồng thời: Hỗ trợ nhiều giao dịch đồng thời nhờ Socket.IO.
+
 Tối ưu hóa:
+
 Chia nhỏ dữ liệu lớn khi mã hóa RSA để tránh lỗi kích thước.
+
 Sử dụng threading cho Socket.IO để cải thiện hiệu suất.
+
 Lưu trữ khóa phiên trong bộ nhớ tạm để tái sử dụng.
+
 🔒 Bảo mật
+
 Điểm mạnh:
+
 ✅ Mã hóa end-to-end: AES-GCM đảm bảo an toàn nội dung file.
 
 ✅ Xác thực mạnh: RSA-2048 và SHA-512 ngăn chặn giả mạo.
@@ -107,18 +149,31 @@ Lưu trữ khóa phiên trong bộ nhớ tạm để tái sử dụng.
 ✅ Giao tiếp real-time: Socket.IO cho phép xử lý nhanh và an toàn.
 
 ✅ Không lưu trữ khóa nhạy cảm: Khóa riêng và khóa phiên chỉ lưu trong session.
+
 📊 Hiệu suất
+
 Thông số đo được:
+
 Độ trễ mã hóa: ~20-50ms (tùy kích thước file).
+
 Độ trễ giải mã: ~10-30ms.
+
 Băng thông: Tùy thuộc kích thước file, overhead mã hóa ~5-10%.
+
 Đồng thời: Hỗ trợ nhiều giao dịch đồng thời nhờ Socket.IO.
+
 Tối ưu hóa:
+
 Chia nhỏ dữ liệu lớn khi mã hóa RSA để tránh lỗi kích thước.
+
 Sử dụng threading cho Socket.IO để cải thiện hiệu suất.
+
 Lưu trữ khóa phiên trong bộ nhớ tạm để tái sử dụng.
+
 🔒 Bảo mật
+
 Điểm mạnh:
+
 ✅ Mã hóa end-to-end: AES-GCM đảm bảo an toàn nội dung file.
 
 ✅ Xác thực mạnh: RSA-2048 và SHA-512 ngăn chặn giả mạo.
