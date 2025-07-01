@@ -2,34 +2,60 @@
 ![image](https://github.com/user-attachments/assets/6c11514d-1165-4ff9-b5cc-df682f1771e8)
 ![image](https://github.com/user-attachments/assets/106f2197-e246-45d8-8d3b-44de34907ee3)
 ![image](https://github.com/user-attachments/assets/facb5c5e-acbf-4094-aa3e-466be058119a)
+
+
 📘 Gửi Báo Cáo Công Ty Qua Server Trung Gian
 Một hệ thống truyền file bảo mật sử dụng mã hóa RSA-2048, AES-GCM và xác thực SHA-512, được xây dựng với Flask backend, Socket.IO cho giao tiếp real-time, và Bootstrap frontend.
 
 🔐 Tính năng bảo mật
 Mã hóa mạnh mẽ: Sử dụng RSA-2048 để trao đổi khóa và AES-GCM để mã hóa nội dung file.
+
 Xác thực RSA/PSS: Đảm bảo danh tính người gửi và người nhận thông qua chữ ký số với RSA và SHA-512.
+
 Kiểm tra toàn vẹn SHA-512: Đảm bảo dữ liệu không bị giả mạo trong quá trình truyền.
+
 Trao đổi khóa an toàn: Sử dụng RSA-OAEP với SHA-512 để mã hóa khóa phiên (session key).
+
 Chữ ký số: Xác thực metadata và nội dung file với chữ ký RSA/PSS.
+
 Real-time: Giao tiếp tức thời qua Socket.IO, đảm bảo xử lý nhanh chóng và hiệu quả.
+
 🏗️ Kiến trúc hệ thống
+
 Luồng xử lý bảo mật:
+
 Handshake:
+
 Người gửi: Gửi tín hiệu "Hello!" để bắt đầu kết nối.
+
 Người nhận: Phản hồi "Ready!" để xác nhận sẵn sàng.
+
 Trao đổi khóa:
+
 Tạo cặp khóa RSA-2048 cho cả người gửi và người nhận.
+
 Người gửi mã hóa khóa phiên AES-GCM bằng khóa công khai RSA của người nhận.
+
 Ký metadata (tên file, ID giao dịch, timestamp) bằng khóa riêng RSA của người gửi.
+
 Gửi file:
+
 Nội dung file được mã hóa bằng AES-GCM với khóa phiên.
+
 Tạo hash SHA-512 của dữ liệu mã hóa để kiểm tra toàn vẹn.
+
 Ký hash bằng RSA/PSS để xác thực.
+
 Xác thực và giải mã:
+
 Người nhận xác thực chữ ký metadata và file bằng khóa công khai RSA của người gửi.
+
 Kiểm tra hash SHA-512 để đảm bảo toàn vẹn dữ liệu.
+
 Giải mã file bằng khóa phiên AES-GCM.
+
 Gửi ACK (xác nhận thành công) hoặc NACK (thất bại) tới người gửi.
+
 Hướng dẫn sử dụng
 Bước 1: Kết nối
 Mở giao diện trong trình duyệt.
