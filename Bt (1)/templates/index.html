@@ -1,0 +1,360 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ thống Ký số Nâng cao - Advanced Digital Signature System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #64748b;
+            --success-color: #059669;
+            --warning-color: #d97706;
+            --danger-color: #dc2626;
+            --dark-color: #1e293b;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .main-container {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-section {
+            text-align: center;
+            padding: 3rem 0;
+            color: white;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .role-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            height: 280px;
+        }
+
+        .role-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .role-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .role-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+
+        .role-description {
+            color: var(--secondary-color);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .role-btn {
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .sender-card .role-icon { color: var(--primary-color); }
+        .server-card .role-icon { color: var(--success-color); }
+        .receiver-card .role-icon { color: var(--warning-color); }
+
+        .sender-card .role-btn {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .server-card .role-btn {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .receiver-card .role-btn {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .role-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .features-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 3rem;
+            color: white;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .feature-icon {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            color: #fbbf24;
+        }
+
+        .tech-stack {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+            color: white;
+        }
+
+        .tech-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            margin: 0.25rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .role-card {
+                height: auto;
+                margin-bottom: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="main-container">
+            <!-- Hero Section -->
+            <div class="hero-section">
+                <h1 class="hero-title">
+                    <i class="fas fa-shield-alt"></i>
+                    Hệ thống Ký số Nâng cao
+                </h1>
+                <p class="hero-subtitle">
+                    Digital Signature System với RSA-2048, AES-GCM và Socket.IO
+                </p>
+            </div>
+
+            <!-- Role Selection -->
+            <div class="row">
+                <div class="col-lg-4 col-md-6">
+                    <div class="card role-card sender-card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-paper-plane role-icon"></i>
+                            <h5 class="role-title">Người Gửi</h5>
+                            <p class="role-description">
+                                Gửi file txt/docx được mã hóa và ký số với RSA-2048
+                            </p>
+                            <a href="/sender" target="_blank" class="btn role-btn">
+                                <i class="fas fa-arrow-right me-2"></i>Truy cập
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="card role-card server-card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-server role-icon"></i>
+                            <h5 class="role-title">Server Trung gian</h5>
+                            <p class="role-description">
+                                Chuyển tiếp thông điệp và lưu log giao dịch real-time
+                            </p>
+                            <a href="/server" target="_blank" class="btn role-btn">
+                                <i class="fas fa-chart-line me-2"></i>Giám sát
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="card role-card receiver-card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-download role-icon"></i>
+                            <h5 class="role-title">Người Nhận</h5>
+                            <p class="role-description">
+                                Xác thực và giải mã file với kiểm tra toàn vẹn
+                            </p>
+                            <a href="/receiver" target="_blank" class="btn role-btn">
+                                <i class="fas fa-check-circle me-2"></i>Nhận file
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features Section -->
+            <div class="features-section">
+                <h4 class="mb-4">
+                    <i class="fas fa-star me-2"></i>Tính năng nổi bật
+                </h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="feature-item">
+                            <i class="fas fa-lock feature-icon"></i>
+                            <div>
+                                <strong>Mã hóa mạnh:</strong> RSA-2048 + AES-GCM
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-shield-check feature-icon"></i>
+                            <div>
+                                <strong>Ký số:</strong> RSA/PSS + SHA-512
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-network-wired feature-icon"></i>
+                            <div>
+                                <strong>Real-time:</strong> Socket.IO communication
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="feature-item">
+                            <i class="fas fa-file-alt feature-icon"></i>
+                            <div>
+                                <strong>Hỗ trợ file:</strong> TXT, DOCX, PDF
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-history feature-icon"></i>
+                            <div>
+                                <strong>Logging:</strong> Chi tiết mọi giao dịch
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check-double feature-icon"></i>
+                            <div>
+                                <strong>Integrity:</strong> Kiểm tra toàn vẹn SHA-512
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tech Stack -->
+            <div class="tech-stack">
+                <h4 class="mb-3">
+                    <i class="fas fa-code me-2"></i>Công nghệ sử dụng
+                </h4>
+                <span class="tech-badge">Flask + Socket.IO</span>
+                <span class="tech-badge">RSA-2048</span>
+                <span class="tech-badge">AES-GCM</span>
+                <span class="tech-badge">SHA-512</span>
+                <span class="tech-badge">Bootstrap 5</span>
+                <span class="tech-badge">Font Awesome</span>
+                <span class="tech-badge">Cryptography</span>
+                <span class="tech-badge">Real-time WebSocket</span>
+            </div>
+
+            <!-- Process Flow -->
+            <div class="features-section">
+                <h4 class="mb-4">
+                    <i class="fas fa-route me-2"></i>Quy trình hoạt động
+                </h4>
+                <div class="row">
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="mb-2">
+                            <i class="fas fa-handshake" style="font-size: 2rem; color: #fbbf24;"></i>
+                        </div>
+                        <h6>1. Handshake</h6>
+                        <small>Hello ↔ Ready</small>
+                    </div>
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="mb-2">
+                            <i class="fas fa-key" style="font-size: 2rem; color: #fbbf24;"></i>
+                        </div>
+                        <h6>2. Trao khóa</h6>
+                        <small>RSA + Session Key</small>
+                    </div>
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="mb-2">
+                            <i class="fas fa-file-upload" style="font-size: 2rem; color: #fbbf24;"></i>
+                        </div>
+                        <h6>3. Gửi file</h6>
+                        <small>AES-GCM + Hash</small>
+                    </div>
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="mb-2">
+                            <i class="fas fa-check-circle" style="font-size: 2rem; color: #fbbf24;"></i>
+                        </div>
+                        <h6>4. Xác thực</h6>
+                        <small>Verify + Decrypt</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <p>
+                    <i class="fas fa-graduation-cap me-2"></i>
+                    Hệ thống Ký số Nâng cao - Digital Signature System
+                </p>
+                <p>
+                    <small>
+                        Developed with ❤️Cường Ka - Gia Huy Oni - Dũng Nguyễn❤️
+                    </small>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,490 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Người Gửi - Sender</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .main-container {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .step-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .step-number {
+            background: #2563eb;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+
+        .btn-custom {
+            border-radius: 50px;
+            padding: 0.8rem 2rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .status-indicator {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .status-success { background: #dcfce7; color: #166534; }
+        .status-warning { background: #fef3c7; color: #92400e; }
+        .status-info { background: #dbeafe; color: #1e40af; }
+        .status-error { background: #fecaca; color: #991b1b; }
+
+        .log-container {
+            background: #1e293b;
+            color: #e2e8f0;
+            border-radius: 10px;
+            padding: 1rem;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9rem;
+        }
+
+        .file-upload-area {
+            border: 2px dashed #cbd5e1;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            background: #f8fafc;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload-area:hover {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .page-title {
+            color: white;
+            text-align: center;
+            margin-bottom: 2rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="main-container">
+            <h2 class="page-title">
+                <i class="fas fa-paper-plane me-3"></i>
+                Người Gửi - Digital Sender
+            </h2>
+            
+            <a href="/" class="btn btn-outline-light mb-4">
+                <i class="fas fa-arrow-left me-2"></i>Trang chủ
+            </a>
+
+            <div class="row">
+                <div class="col-lg-8">
+                    <!-- Step 1: Generate Keys -->
+                    <div class="step-card">
+                        <div class="step-header">
+                            <div class="step-number">1</div>
+                            <h5 class="mb-0">Tạo cặp khóa RSA-2048</h5>
+                        </div>
+                        
+                        <div id="keyStatus" class="status-indicator status-warning">
+                            <i class="fas fa-clock me-2"></i>Chưa tạo khóa
+                        </div>
+                        
+                        <button id="generateKeys" class="btn btn-primary btn-custom">
+                            <i class="fas fa-key me-2"></i>Tạo khóa RSA
+                        </button>
+                        
+                        <div id="publicKeyDisplay" class="mt-3" style="display: none;">
+                            <label class="form-label">Public Key (RSA-2048):</label>
+                            <textarea id="publicKey" class="form-control" rows="6" readonly></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Handshake -->
+                    <div class="step-card">
+                        <div class="step-header">
+                            <div class="step-number">2</div>
+                            <h5 class="mb-0">Bắt tay với người nhận</h5>
+                        </div>
+                        
+                        <div id="handshakeStatus" class="status-indicator status-warning">
+                            <i class="fas fa-clock me-2"></i>Chưa thực hiện handshake
+                        </div>
+                        
+                        <button id="sendHello" class="btn btn-success btn-custom" disabled>
+                            <i class="fas fa-handshake me-2"></i>Gửi "Hello!"
+                        </button>
+                        
+                        <div id="handshakeResult" class="mt-3" style="display: none;"></div>
+                    </div>
+
+                    <!-- Step 3: Send Auth Key -->
+                    <div class="step-card">
+                        <div class="step-header">
+                            <div class="step-number">3</div>
+                            <h5 class="mb-0">Gửi khóa xác thực</h5>
+                        </div>
+                        
+                        <div id="authKeyStatus" class="status-indicator status-warning">
+                            <i class="fas fa-clock me-2"></i>Chưa gửi khóa xác thực
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Tên file:</label>
+                            <input type="text" id="fileName" class="form-control" value="report.txt" placeholder="Nhập tên file">
+                        </div>
+                        
+                        <button id="sendAuthKey" class="btn btn-warning btn-custom" disabled>
+                            <i class="fas fa-shield-alt me-2"></i>Gửi khóa xác thực
+                        </button>
+                        
+                        <div id="authKeyResult" class="mt-3" style="display: none;"></div>
+                    </div>
+
+                    <!-- Step 4: Send File -->
+                    <div class="step-card">
+                        <div class="step-header">
+                            <div class="step-number">4</div>
+                            <h5 class="mb-0">Gửi file được mã hóa</h5>
+                        </div>
+                        
+                        <div id="fileStatus" class="status-indicator status-warning">
+                            <i class="fas fa-clock me-2"></i>Chưa gửi file
+                        </div>
+                        
+                        <!-- File Upload Area -->
+                        <div class="file-upload-area mb-3">
+                            <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                            <p class="mb-3">Kéo thả file hoặc click để chọn</p>
+                            <input type="file" id="fileInput" class="form-control" accept=".txt,.docx,.pdf" style="display: none;">
+                            <button class="btn btn-outline-primary" onclick="document.getElementById('fileInput').click()">
+                                <i class="fas fa-folder-open me-2"></i>Chọn file
+                            </button>
+                        </div>
+                        
+                        <!-- Text Input Area -->
+                        <div class="mb-3">
+                            <label class="form-label">Hoặc nhập nội dung trực tiếp:</label>
+                            <textarea id="fileContent" class="form-control" rows="4" placeholder="Nhập nội dung báo cáo...">Đây là nội dung báo cáo mẫu từ công ty ABC.
+
+Ngày: 2024-01-15
+Loại báo cáo: Tài chính quý 4/2023
+
+Nội dung:
+- Doanh thu: 1,500,000 VND
+- Chi phí: 800,000 VND  
+- Lợi nhuận: 700,000 VND
+
+Báo cáo này được gửi qua hệ thống mã hóa an toàn với RSA-2048 và AES-GCM.</textarea>
+                        </div>
+                        
+                        <button id="sendFile" class="btn btn-danger btn-custom" disabled>
+                            <i class="fas fa-file-upload me-2"></i>Gửi file mã hóa
+                        </button>
+                        
+                        <div id="fileResult" class="mt-3" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <!-- Connection Status -->
+                    <div class="step-card">
+                        <h6><i class="fas fa-wifi me-2"></i>Trạng thái kết nối</h6>
+                        <div id="connectionStatus" class="status-indicator status-warning">
+                            <i class="fas fa-spinner fa-spin me-2"></i>Đang kết nối...
+                        </div>
+                    </div>
+
+                    <!-- Transaction Info -->
+                    <div class="step-card">
+                        <h6><i class="fas fa-info-circle me-2"></i>Thông tin giao dịch</h6>
+                        <div id="transactionInfo">
+                            <p class="mb-1"><strong>Transaction ID:</strong> <span id="transactionId">-</span></p>
+                            <p class="mb-1"><strong>Metadata:</strong> <span id="metadata">-</span></p>
+                            <p class="mb-0"><strong>Trạng thái:</strong> <span id="transactionStatus">Chưa bắt đầu</span></p>
+                        </div>
+                    </div>
+
+                    <!-- Verification Results -->
+                    <div class="step-card">
+                        <h6><i class="fas fa-check-circle me-2"></i>Kết quả xác thực</h6>
+                        <div id="verificationResults">
+                            <div class="status-indicator status-info">
+                                <i class="fas fa-clock me-2"></i>Chờ phản hồi từ người nhận...
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Activity Log -->
+                    <div class="step-card">
+                        <h6><i class="fas fa-history me-2"></i>Nhật ký hoạt động</h6>
+                        <div id="activityLog" class="log-container">
+                            <div class="text-muted">Chờ hoạt động...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script>
+        const socket = io();
+        let currentTransactionId = null;
+        let isHandshakeComplete = false;
+        let isAuthKeySent = false;
+
+        // Connection status
+        socket.on('connect', function() {
+            updateStatus('connectionStatus', 'success', 'Đã kết nối', 'check-circle');
+            addLog('Kết nối thành công với server');
+            socket.emit('join_role', {role: 'sender'});
+        });
+
+        socket.on('disconnect', function() {
+            updateStatus('connectionStatus', 'error', 'Mất kết nối', 'times-circle');
+            addLog('Mất kết nối với server');
+        });
+
+        // Step 1: Generate Keys
+        document.getElementById('generateKeys').addEventListener('click', function() {
+            this.disabled = true;
+            addLog('Đang tạo cặp khóa RSA-2048...');
+            
+            socket.emit('generate_keys', {role: 'sender'});
+        });
+
+        socket.on('keys_generated', function(data) {
+            if (data.success) {
+                updateStatus('keyStatus', 'success', 'Khóa đã được tạo', 'check-circle');
+                document.getElementById('publicKeyDisplay').style.display = 'block';
+                document.getElementById('publicKey').value = data.public_key;
+                document.getElementById('sendHello').disabled = false;
+                addLog('Tạo khóa RSA-2048 thành công');
+            }
+        });
+
+        // Step 2: Handshake
+        document.getElementById('sendHello').addEventListener('click', function() {
+            this.disabled = true;
+            addLog('Đang gửi Hello...');
+            
+            socket.emit('handshake', {
+                action: 'hello',
+                from: 'sender',
+                to: 'receiver',
+                message: 'Hello!'
+            });
+        });
+
+        socket.on('handshake_sent', function(data) {
+            if (data.success) {
+                updateStatus('handshakeStatus', 'info', 'Đã gửi Hello, chờ Ready...', 'clock');
+                addLog('Đã gửi Hello, chờ phản hồi Ready từ người nhận...');
+            }
+        });
+
+        socket.on('handshake_received', function(data) {
+            if (data.action === 'ready' && data.from === 'receiver') {
+                updateStatus('handshakeStatus', 'success', 'Handshake hoàn tất', 'check-circle');
+                document.getElementById('sendAuthKey').disabled = false;
+                isHandshakeComplete = true;
+                addLog('Nhận được Ready từ người nhận - Handshake hoàn tất');
+            }
+        });
+
+        // Step 3: Send Auth Key
+        document.getElementById('sendAuthKey').addEventListener('click', function() {
+            if (!isHandshakeComplete) {
+                alert('Vui lòng hoàn tất handshake trước');
+                return;
+            }
+            
+            this.disabled = true;
+            const fileName = document.getElementById('fileName').value || 'report.txt';
+            addLog(`Đang gửi khóa xác thực cho file: ${fileName}`);
+            
+            socket.emit('send_auth_key', {
+                filename: fileName
+            });
+        });
+
+        socket.on('auth_key_sent', function(data) {
+            if (data.success) {
+                currentTransactionId = data.transaction_id;
+                updateStatus('authKeyStatus', 'success', 'Khóa xác thực đã gửi', 'check-circle');
+                document.getElementById('sendFile').disabled = false;
+                document.getElementById('transactionId').textContent = currentTransactionId;
+                document.getElementById('metadata').textContent = data.metadata;
+                document.getElementById('transactionStatus').textContent = 'Đã gửi khóa';
+                isAuthKeySent = true;
+                addLog(`Gửi khóa xác thực thành công - Transaction: ${currentTransactionId}`);
+            }
+        });
+
+        // Step 4: Send File
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('fileContent').value = e.target.result;
+                    document.getElementById('fileName').value = file.name;
+                    addLog(`Đã tải file: ${file.name} (${file.size} bytes)`);
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        document.getElementById('sendFile').addEventListener('click', function() {
+            if (!isAuthKeySent) {
+                alert('Vui lòng gửi khóa xác thực trước');
+                return;
+            }
+            
+            const fileContent = document.getElementById('fileContent').value;
+            const fileName = document.getElementById('fileName').value || 'report.txt';
+            
+            if (!fileContent.trim()) {
+                alert('Vui lòng nhập nội dung file');
+                return;
+            }
+            
+            this.disabled = true;
+            addLog(`Đang mã hóa và gửi file: ${fileName}`);
+            updateStatus('fileStatus', 'info', 'Đang mã hóa file...', 'spinner fa-spin');
+            
+            socket.emit('send_file', {
+                transaction_id: currentTransactionId,
+                file_content: fileContent,
+                file_name: fileName
+            });
+        });
+
+        socket.on('file_sent', function(data) {
+            if (data.success) {
+                updateStatus('fileStatus', 'success', 'File đã được mã hóa và gửi', 'check-circle');
+                document.getElementById('transactionStatus').textContent = 'Đã gửi file';
+                addLog(`File đã được mã hóa và gửi thành công: ${data.file_name}`);
+                
+                updateStatus('verificationResults', 'info', 'Chờ xác thực từ người nhận...', 'clock');
+            }
+        });
+
+        // Verification Results
+        socket.on('verification_result', function(data) {
+            if (data.type === 'ACK') {
+                updateStatus('verificationResults', 'success', 'File đã được xác thực thành công!', 'check-circle');
+                addLog(`ACK nhận được - ${data.message}`);
+                document.getElementById('transactionStatus').textContent = 'Hoàn tất thành công';
+            } else if (data.type === 'NACK') {
+                updateStatus('verificationResults', 'error', 'Xác thực thất bại!', 'times-circle');
+                addLog(`NACK nhận được - ${data.message}`);
+                document.getElementById('transactionStatus').textContent = 'Thất bại';
+            }
+        });
+
+        // Error handling
+        socket.on('error', function(data) {
+            addLog(`LỖI: ${data.message}`, 'error');
+            
+            // Re-enable buttons if needed
+            document.getElementById('generateKeys').disabled = false;
+            document.getElementById('sendHello').disabled = !document.getElementById('publicKey').value;
+            document.getElementById('sendAuthKey').disabled = !isHandshakeComplete;
+            document.getElementById('sendFile').disabled = !isAuthKeySent;
+        });
+
+        // Utility functions
+        function updateStatus(elementId, type, message, icon) {
+            const element = document.getElementById(elementId);
+            element.className = `status-indicator status-${type}`;
+            element.innerHTML = `<i class="fas fa-${icon} me-2"></i>${message}`;
+        }
+
+        function addLog(message, type = 'info') {
+            const logContainer = document.getElementById('activityLog');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry log-${type}`;
+            logEntry.innerHTML = `<span class="text-muted">[${timestamp}]</span> ${message}`;
+            
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        // File drag and drop
+        const fileUploadArea = document.querySelector('.file-upload-area');
+        
+        fileUploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#2563eb';
+            this.style.background = '#eff6ff';
+        });
+        
+        fileUploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#cbd5e1';
+            this.style.background = '#f8fafc';
+        });
+        
+        fileUploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#cbd5e1';
+            this.style.background = '#f8fafc';
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                document.getElementById('fileInput').files = files;
+                document.getElementById('fileInput').dispatchEvent(new Event('change'));
+            }
+        });
+    </script>
+</body>
+</html>
